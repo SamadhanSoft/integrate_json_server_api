@@ -88,6 +88,13 @@ h1 {
 }
 .record-added{
   text-align: center;
-  color: green;
   font-size: medium;  
+}
+
+.success{
+  color: green;
+}
+
+.error{
+  color: red;
 }

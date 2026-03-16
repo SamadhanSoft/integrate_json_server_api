@@ -8,6 +8,7 @@ const UserAdd = () => {
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
   const [msg, setMsg] = useState("");
+  const [isSuccess, setIsSuccess] = useState(null);
 
   const createUser = async () => {
     //const url = "http://localhost:3000/users";
@@ -31,9 +32,16 @@ const UserAdd = () => {
     });
 
     res = await res.json();
-
+   if(res){
+     setMsg("User added successfully");
+     setIsSuccess(true);
+   }
+   else{
+        setMsg("Failed to add user");
+        setIsSuccess(false);
+   }
     console.log(res);
-    setMsg("User added successfully");
+   
 
   };
   return (
@@ -104,7 +112,11 @@ const UserAdd = () => {
         </p>
         <button onClick={createUser}>Add User</button>
       </div>
-      <p className="record-added">{msg}</p>
+      <p className = {isSuccess ? "record-added success" : "record-added error"}>{msg}</p>
+
+      {/* <p className={isSuccess ? "record-added success" : "record-added error"}>
+  {msg}
+</p> */}
     </div>
   );
 };

@@ -10,15 +10,30 @@ const UserList = () => {
     setLoading(true);
     getUsers();
   }, []);
-
+  const url = "http://localhost:3000/users";
   const getUsers = async () => {
-    const url = "http://localhost:3000/users";
     let res = await fetch(url);
     let data = await res.json();
     setuserData(data);
     setLoading(false);
     console.log(data);
   };
+  const deleteUser = async (id) => {
+    let res = await fetch(url + "/" + id, {
+        method: "DELETE"
+    });
+    res = await res.json();
+    if (res) {
+      alert("User deleted successfully");
+      getUsers();
+    } else {
+      alert("Failed to delete user");
+    }
+  };
+
+  const editUser = async (id) => {
+
+  }
   return (
     <div>
       <ul>
@@ -26,6 +41,7 @@ const UserList = () => {
           <p className="bold">Name</p>
           <p className="bold">Email</p>
           <p className="bold">Phone</p>
+          <p className="bold">Username</p>
           <p className="bold">Action</p>
         </li>
         {userData &&
@@ -39,8 +55,8 @@ const UserList = () => {
               <p>{user.username}</p>
               <p>
                 <button>View</button>
-                <button>Delete</button>
-                <button>Edit</button>
+                <button onClick={() => deleteUser(user.id)}>Delete</button>
+                <button onClick={() => editUser(user.id)}>Edit</button>
               </p>
             </li>
           ))}
