@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import "./App.css";
 
 const UserAdd = () => {
@@ -10,43 +10,83 @@ const UserAdd = () => {
   const [username, setUsername] = useState("");
   const [msg, setMsg] = useState("");
   const [isSuccess, setIsSuccess] = useState(null);
-      let navigate = useNavigate();
+  let navigate = useNavigate();
+
   const createUser = async () => {
     //const url = "http://localhost:3000/users";
     console.log(name, lastName, email, phone, username);
-    //clear textboc
+    /*clear textboc
     setName("");
     setLastName("");
     setEmail("");
     setPhone("");
-    setUsername("");
+    setUsername("");*/
+
+    setMsg("");
+
+    //Validation
+    if (!name.trim()) {
+      setMsg("First Name is required");
+      setIsSuccess(false);
+      return;
+    }
+
+    if (!lastName.trim()) {
+      setMsg("Last Name is required");
+      setIsSuccess(false);
+      return;
+    }
+    if (!email.trim()) {
+      setMsg("Email is required");
+      setIsSuccess(false);
+      return;
+    }
+    if (email && !/\S+@\S+\.\S+/.test(email)) {
+      setMsg("Email is invalid");
+      setIsSuccess(false);
+      return;
+    }
+    if (!phone.trim()) {
+      setMsg("Phone is required");
+      setIsSuccess(false);
+      return;
+    }
+    if (phone.length !== 10) {
+      setMsg("Phone number must be 10 digits");
+      setIsSuccess(false);
+      return;
+    }
+    if (!username.trim()) {
+      setMsg("Username is required");
+      setIsSuccess(false);
+      return;
+    }
 
     const url = "http://localhost:3000/users";
-    let res = await fetch(url,{
-        method: "POST",
-        body:JSON.stringify({
-            firstName: name,
-            lastName: lastName,
-            email: email,
-            phone: phone,
-            username: username
-        })
+
+    let res = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        firstName: name,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        username: username,
+      }),
     });
 
     res = await res.json();
-   if(res){
-     setMsg("User added successfully");
-     setIsSuccess(true);
-     setTimeout(() => navigate("/"), 1000);
-   }
-   else{
-        setMsg("Failed to add user");
-        setIsSuccess(false);
-   }
+    if (res) {
+      setMsg("User added successfully");
+      setIsSuccess(true);
+      setTimeout(() => navigate("/"), 1000);
+    } else {
+      setMsg("Failed to add user");
+      setIsSuccess(false);
+    }
     console.log(res);
-   
-
   };
+
   return (
     <div>
       <h1>Add New User</h1>
@@ -115,9 +155,9 @@ const UserAdd = () => {
         </p>
         <button onClick={createUser}>Add User</button>
       </div>
-      <p className = {isSuccess ? "record-added success" : "record-added error"}>{msg}</p>
-
-
+      <p className={isSuccess ? "record-added success" : "record-added error"}>
+        {msg}
+      </p>
     </div>
   );
 };
