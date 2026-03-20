@@ -2,6 +2,7 @@ import "./App.css";
 import UserAdd from "./UserAdd";
 import UserList from "./UserList";
 import { BrowserRouter, Routes, Route, NavLink } from "react-router";
+import UserEdit from "./UserEdit";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<UserList />} />
         <Route path="/add-user" element={<UserAdd />} />
+        <Route path="/edit-user/:id" element={<UserEdit />} />
       </Routes>
     </div>
   );

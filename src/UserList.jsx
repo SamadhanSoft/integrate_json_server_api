@@ -1,10 +1,13 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+
 import "./App.css";
 
 const UserList = () => {
   const [userData, setuserData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +35,7 @@ const UserList = () => {
   };
 
   const editUser = async (id) => {
-
+    navigate("/edit-user/" + id);
   }
   return (
     <div>
@@ -54,7 +57,6 @@ const UserList = () => {
               <p>{user.phone}</p>
               <p>{user.username}</p>
               <p>
-                <button>View</button>
                 <button onClick={() => deleteUser(user.id)}>Delete</button>
                 <button onClick={() => editUser(user.id)}>Edit</button>
               </p>

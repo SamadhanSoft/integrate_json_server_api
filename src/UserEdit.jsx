@@ -1,64 +1,57 @@
-import React, { useState } from "react";
-import {useNavigate } from "react-router";
+//import { useParams } from "react-router";
+import { useState, useEffect } from "react";
 import "./App.css";
+import { useParams, useNavigate } from "react-router";
 
-const UserAdd = () => {
-  const [name, setName] = useState("");
+const UserEdit = () => {
+  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
   const [msg, setMsg] = useState("");
   const [isSuccess, setIsSuccess] = useState(null);
-      let navigate = useNavigate();
-  const createUser = async () => {
-    //const url = "http://localhost:3000/users";
-    console.log(name, lastName, email, phone, username);
-    //clear textboc
-    setName("");
-    setLastName("");
-    setEmail("");
-    setPhone("");
-    setUsername("");
 
-    const url = "http://localhost:3000/users";
-    let res = await fetch(url,{
-        method: "POST",
-        body:JSON.stringify({
-            firstName: name,
-            lastName: lastName,
-            email: email,
-            phone: phone,
-            username: username
-        })
-    });
+  const { id } = useParams();
+  console.log(id);
 
+  useEffect(() => {
+    getUserEdit();
+  }, []);
+
+  const url = "http://localhost:3000/users/" + id;
+  let navigate = useNavigate();
+  const getUserEdit = async () => {
+    let res = await fetch(url);
     res = await res.json();
-   if(res){
-     setMsg("User added successfully");
-     setIsSuccess(true);
-     setTimeout(() => navigate("/"), 1000);
-   }
-   else{
-        setMsg("Failed to add user");
-        setIsSuccess(false);
-   }
     console.log(res);
-   
+    setFirstName(res.firstName);
+    setLastName(res.lastName);
+    setEmail(res.email);
+    setPhone(res.phone);
+    setUsername(res.username);
+  };
 
+  const updateUserData = async () => {
+    let res = await fetch(url, {
+      method: "Put",
+      body: JSON.stringify({ firstName, lastName, email, phone, username }),
+    });
+    res = await res.json();
+    console.log(res);
+    //console.log(name, lastName, email, phone, username);
+    if (res) {
+      setMsg("User updated successfully");
+      setIsSuccess(true);
+      setTimeout(() => navigate("/"), 1000);
+    } else {
+      setMsg("User updated Failled");
+      setIsSuccess(false);
+    }
   };
   return (
     <div>
-      <h1>Add New User</h1>
-
-      {/* Form to add new user 
-      {name && <p>Name: {name}</p>}
-      {lastName && <p>Last Name: {lastName}</p>}
-      {email && <p>Email: {email}</p>}
-      {phone && <p>Phone: {phone}</p>}
-      {username && <p>Username: {username}</p>}
-      */}
-
+      <h1>Edit User</h1>
       <div
         className="form-data"
         style={{ backgroundColor: "#f0f0f0", padding: "20px" }}
@@ -69,8 +62,8 @@ const UserAdd = () => {
             placeholder="First Name"
             className="form-control"
             name="firstName"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
           />
         </p>
         <p>
@@ -113,13 +106,13 @@ const UserAdd = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </p>
-        <button onClick={createUser}>Add User</button>
+        <button onClick={updateUserData}>Update User</button>
       </div>
-      <p className = {isSuccess ? "record-added success" : "record-added error"}>{msg}</p>
-
-
+      <p className={isSuccess ? "record-added success" : "record-added error"}>
+        {msg}
+      </p>
     </div>
   );
 };
 
-export default UserAdd;
+export default UserEdit;
