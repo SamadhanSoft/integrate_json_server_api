@@ -1,7 +1,8 @@
 //import { useParams } from "react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import "./App.css";
 import { useParams, useNavigate } from "react-router";
+import { AuthContext } from "./AuthContext";
 
 const UserEdit = () => {
   const [firstName, setFirstName] = useState("");
@@ -15,15 +16,15 @@ const UserEdit = () => {
 
   const { id } = useParams();
   console.log(id);
-
-  useEffect(() => {
-    getUserEdit();
-  }, []);
+  const { token } = useContext(AuthContext);
 
   const url = "http://localhost:3000/users/" + id;
   let navigate = useNavigate();
-  const getUserEdit = async () => {
-    let res = await fetch(url);
+
+  const getUserEdit = useCallback(async () => {
+    let res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     res = await res.json();
     console.log(res);
     setFirstName(res.firstName);
@@ -32,11 +33,20 @@ const UserEdit = () => {
     setPhone(res.phone);
     setUsername(res.username);
     setPassword(res.password);
-  };
+  }, [token, url]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    getUserEdit();
+  }, [getUserEdit]);
 
   const updateUserData = async () => {
     let res = await fetch(url, {
-      method: "Put",
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({ firstName, lastName, email, phone, username, password }),
     });
     res = await res.json();
@@ -47,7 +57,7 @@ const UserEdit = () => {
       setIsSuccess(true);
       setTimeout(() => navigate("/"), 1000);
     } else {
-      setMsg("User updated Failled");
+      setMsg("User updated Failed");
       setIsSuccess(false);
     }
   };

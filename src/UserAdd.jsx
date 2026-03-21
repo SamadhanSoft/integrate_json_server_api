@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router";
+import { AuthContext } from "./AuthContext";
 import "./App.css";
 
 const UserAdd = () => {
@@ -12,10 +13,7 @@ const UserAdd = () => {
   const [msg, setMsg] = useState("");
   const [isSuccess, setIsSuccess] = useState(null);
   let navigate = useNavigate();
-
-  useEffect(() => {
-    clearForm();
-  }, []);
+  const { token } = useContext(AuthContext);
 
   const clearForm = () => {
     setName("");
@@ -24,7 +22,12 @@ const UserAdd = () => {
     setPhone("");
     setUsername("");
     setPassword("");
-  }
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    clearForm();
+  }, []);
   const createUser = async () => {
     //const url = "http://localhost:3000/users";
     console.log(name, lastName, email, phone, username);
@@ -79,6 +82,10 @@ const UserAdd = () => {
 
     let res = await fetch(url, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         firstName: name,
         lastName: lastName,

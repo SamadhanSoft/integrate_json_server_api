@@ -1,29 +1,35 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useNavigate } from "react-router";
+import { AuthContext } from "./AuthContext";
 
 import "./App.css";
 
 const UserList = () => {
   const [userData, setuserData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { token } = useContext(AuthContext);
 
-  useEffect(() => {
-    setLoading(true);
-    getUsers();
-  }, []);
   const url = "http://localhost:3000/users";
-  const getUsers = async () => {
-    let res = await fetch(url);
+
+  const getUsers = useCallback(async () => {
+    let res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     let data = await res.json();
     setuserData(data);
-    setLoading(false);
     console.log(data);
-  };
+  }, [token]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    getUsers();
+  }, [getUsers]);
+
   const deleteUser = async (id) => {
     let res = await fetch(url + "/" + id, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
     });
     res = await res.json();
     if (res) {
