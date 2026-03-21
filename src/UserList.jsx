@@ -45,6 +45,7 @@ const UserList = () => {
           <p className="bold">Email</p>
           <p className="bold">Phone</p>
           <p className="bold">Username</p>
+          <p className="bold">Password</p>
           <p className="bold">Action</p>
         </li>
         {userData &&
@@ -56,6 +57,7 @@ const UserList = () => {
               <p>{user.email}</p>
               <p>{user.phone}</p>
               <p>{user.username}</p>
+              <p>{user.password}</p>
               <p>
                 <button onClick={() => deleteUser(user.id)}>Delete</button>
                 <button onClick={() => editUser(user.id)}>Edit</button>

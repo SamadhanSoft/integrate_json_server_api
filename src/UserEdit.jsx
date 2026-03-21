@@ -9,6 +9,7 @@ const UserEdit = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [isSuccess, setIsSuccess] = useState(null);
 
@@ -30,12 +31,13 @@ const UserEdit = () => {
     setEmail(res.email);
     setPhone(res.phone);
     setUsername(res.username);
+    setPassword(res.password);
   };
 
   const updateUserData = async () => {
     let res = await fetch(url, {
       method: "Put",
-      body: JSON.stringify({ firstName, lastName, email, phone, username }),
+      body: JSON.stringify({ firstName, lastName, email, phone, username, password }),
     });
     res = await res.json();
     console.log(res);
@@ -106,6 +108,17 @@ const UserEdit = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         </p>
+        <p>
+          <input
+            type="password"
+            placeholder="Password"
+            className="form-control"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </p>
+
         <button onClick={updateUserData}>Update User</button>
       </div>
       <p className={isSuccess ? "record-added success" : "record-added error"}>

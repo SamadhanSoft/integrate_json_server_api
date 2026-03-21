@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import "./App.css";
 
@@ -8,19 +8,27 @@ const UserAdd = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [isSuccess, setIsSuccess] = useState(null);
   let navigate = useNavigate();
 
-  const createUser = async () => {
-    //const url = "http://localhost:3000/users";
-    console.log(name, lastName, email, phone, username);
-    /*clear textboc
+  useEffect(() => {
+    clearForm();
+  }, []);
+
+  const clearForm = () => {
     setName("");
     setLastName("");
     setEmail("");
     setPhone("");
-    setUsername("");*/
+    setUsername("");
+    setPassword("");
+  }
+  const createUser = async () => {
+    //const url = "http://localhost:3000/users";
+    console.log(name, lastName, email, phone, username);
+    //clear textbox
 
     setMsg("");
 
@@ -61,6 +69,11 @@ const UserAdd = () => {
       setIsSuccess(false);
       return;
     }
+    if (!password.trim()) {
+      setMsg("Password is required");
+      setIsSuccess(false);
+      return;
+    }
 
     const url = "http://localhost:3000/users";
 
@@ -72,6 +85,7 @@ const UserAdd = () => {
         email: email,
         phone: phone,
         username: username,
+        password: password,
       }),
     });
 
@@ -79,6 +93,7 @@ const UserAdd = () => {
     if (res) {
       setMsg("User added successfully");
       setIsSuccess(true);
+        clearForm();
       setTimeout(() => navigate("/"), 1000);
     } else {
       setMsg("Failed to add user");
@@ -151,6 +166,18 @@ const UserAdd = () => {
             name="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            autoComplete="off"
+          />
+        </p>
+        <p>
+          <input
+            type="password"
+            placeholder="Password"
+            className="form-control"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="off"
           />
         </p>
         <button onClick={createUser}>Add User</button>
